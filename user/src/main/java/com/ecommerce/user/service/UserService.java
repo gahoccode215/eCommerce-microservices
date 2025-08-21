@@ -1,7 +1,5 @@
 package com.ecommerce.user.service;
 
-import com.app.ecom.dto.UserRequest;
-import com.app.ecom.dto.UserResponse;
 import com.ecommerce.user.repository.UserRepository;
 import com.ecommerce.user.dto.AddressDTO;
 import com.ecommerce.user.dto.UserRequest;
@@ -35,36 +33,50 @@ public class UserService {
         userRepository.save(user);
     }
 
-    private void updateUserFromRequest(User user, UserRequest userRequest) {
-        user.setFirstName(userRequest.getFirstName());
-        user.setLastName(userRequest.getLastName());
-        user.setPhone(userRequest.getPhone());
-        user.setEmail(user.getEmail());
-        if (userRequest.getAddress() != null) {
-            Address address = new Address();
-            address.setStreet(user.getAddress().getStreet());
-            address.setState(user.getAddress().getState());
-            address.setCity(user.getAddress().getCity());
-            address.setZipCode(user.getAddress().getZipCode());
-            address.setCity(user.getAddress().getCity());
-            address.setCountry(user.getAddress().getCountry());
-        }
+//    private void updateUserFromRequest(User user, UserRequest userRequest) {
+//        user.setFirstName(userRequest.getFirstName());
+//        user.setLastName(userRequest.getLastName());
+//        user.setPhone(userRequest.getPhone());
+//        user.setEmail(user.getEmail());
+//        if (userRequest.getAddress() != null) {
+//            Address address = new Address();
+//            address.setStreet(user.getAddress().getStreet());
+//            address.setState(user.getAddress().getState());
+//            address.setCity(user.getAddress().getCity());
+//            address.setZipCode(user.getAddress().getZipCode());
+//            address.setCity(user.getAddress().getCity());
+//            address.setCountry(user.getAddress().getCountry());
+//        }
+//    }
+private void updateUserFromRequest(User user, UserRequest userRequest) {
+    user.setFirstName(userRequest.getFirstName());
+    user.setLastName(userRequest.getLastName());
+    user.setEmail(userRequest.getEmail());
+    user.setPhone(userRequest.getPhone());
+    if (userRequest.getAddress() != null) {
+        Address address = new Address();
+        address.setStreet(userRequest.getAddress().getStreet());
+        address.setState(userRequest.getAddress().getState());
+        address.setZipCode(userRequest.getAddress().getZipCode());
+        address.setCity(userRequest.getAddress().getCity());
+        address.setCountry(userRequest.getAddress().getCountry());
+        user.setAddress(address);
     }
+}
 
-    public Optional<UserResponse> fetchUser(Long id) {
+    public Optional<UserResponse> fetchUser(String id) {
         return userRepository.findById(id).map(this::mapToUserResponse);
     }
 
-    public boolean updateUser(Long id, User updatedUser) {
-        return userRepository.findById(id)
+    public boolean updateUser(String id, UserRequest updatedUserRequest) {
+        return userRepository.findById(String.valueOf(id))
                 .map(existingUser -> {
-                    existingUser.setFirstName(updatedUser.getFirstName());
-                    existingUser.setLastName(updatedUser.getLastName());
+                    updateUserFromRequest(existingUser, updatedUserRequest);
                     userRepository.save(existingUser);
                     return true;
-                })
-                .orElse(false);
+                }).orElse(false);
     }
+
 
     private UserResponse mapToUserResponse(User user) {
         UserResponse response = new UserResponse();
@@ -78,7 +90,6 @@ public class UserService {
             addressDTO.setStreet(user.getAddress().getStreet());
             addressDTO.setCity(user.getAddress().getCity());
             addressDTO.setState(user.getAddress().getCity());
-            addressDTO.setId(user.getId());
             addressDTO.setCountry(user.getAddress().getCountry());
             addressDTO.setZipCode(user.getAddress().getZipCode());
         }

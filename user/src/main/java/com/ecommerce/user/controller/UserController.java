@@ -1,7 +1,5 @@
 package com.ecommerce.user.controller;
 
-import com.app.ecom.dto.UserRequest;
-import com.app.ecom.dto.UserResponse;
 import com.ecommerce.user.service.UserService;
 import com.ecommerce.user.dto.UserRequest;
 import com.ecommerce.user.dto.UserResponse;
@@ -32,7 +30,14 @@ public class UserController {
     }
 
     @GetMapping("/api/users/{id}")
-    public ResponseEntity<Optional<UserResponse>> getUser(@PathVariable Long id){
+    public ResponseEntity<Optional<UserResponse>> getUser(@PathVariable String  id){
         return ResponseEntity.ok( userService.fetchUser(id));
+    }
+    public ResponseEntity<String> updateUser(@PathVariable String id,
+                                             @RequestBody UserRequest updateUserRequest){
+        boolean updated = userService.updateUser(id, updateUserRequest);
+        if (updated)
+            return ResponseEntity.ok("User updated successfully");
+        return ResponseEntity.notFound().build();
     }
 }
