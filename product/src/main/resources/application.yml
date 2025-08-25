@@ -2,15 +2,24 @@ spring:
   application:
     name: product-service
   datasource:
-    url: jdbc:postgresql://localhost:5432/productdb
+    url: jdbc:mysql://localhost:3306/product_db?createDatabaseIfNotExist=true
     username: root
-    password: root
+    password: 12345
   jpa:
-    database: POSTGRESQL
-    show-sql: true
     hibernate:
       ddl-auto: update
-    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    show-sql: true
+    database-platform: org.hibernate.dialect.MySQL8Dialect
+#  datasource:
+#    url: jdbc:postgresql://localhost:5432/productdb
+#    username: root
+#    password: root
+#  jpa:
+#    database: POSTGRESQL
+#    show-sql: true
+#    hibernate:
+#      ddl-auto: update
+#    database-platform: org.hibernate.dialect.PostgreSQLDialect
 server:
   port: 8081
 
